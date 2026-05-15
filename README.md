@@ -8,10 +8,6 @@
 
 <div align="center">
 
-**Language / Idioma**
-
-[**English**](README.md) | [Português (Brasil)](docs/pt-BR/README.md)
-
 </div>
 
 **A professional, cross-platform AI operating system and runtime orchestration fabric for Gemini Code.**
