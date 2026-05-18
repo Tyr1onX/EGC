@@ -1,4 +1,4 @@
-# Everything Gemini Code
+# Everything Gemini Code - Install in 2 Minutes
 
 ![Everything Gemini Code — the performance system for AI agent harnesses](assets/hero.png)
 
