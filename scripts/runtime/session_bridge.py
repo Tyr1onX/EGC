@@ -49,6 +49,20 @@ def _emit_via_fallback(workspace_root: str, event_type: str, execution_id: str, 
         fh.write(json.dumps(record) + "\n")
 
 
+def _emit_via_memory(workspace_root: str, event: str, session_id: str) -> None:
+    try:
+        from llm.memory.manager import MemoryManager
+        manager = MemoryManager(workspace_root)
+        if event == "start":
+            manager.record_session_start(session_id, {"pid": os.getpid()})
+        elif event == "end":
+            # For end, we would ideally have a summary, but for now we record completion
+            manager.record_session_end(session_id, "Session completed successfully.")
+    except Exception as e:
+        # Soft failure for memory
+        print(f"[session_bridge] memory warning: {e}", file=sys.stderr)
+
+
 def main(argv: list[str]) -> int:
     if len(argv) < 2:
         print("usage: session_bridge.py <event> [session_id]", file=sys.stderr)
@@ -60,6 +74,8 @@ def main(argv: list[str]) -> int:
     )
 
     workspace_root = _resolve_workspace_root()
+    
+    # 1. Physical Trace (JSONL / Tracer)
     event_type = f"session.{event}"
     payload = {
         "session_id": session_id,
@@ -69,6 +85,9 @@ def main(argv: list[str]) -> int:
 
     if not _emit_via_tracer(workspace_root, event_type, session_id, payload):
         _emit_via_fallback(workspace_root, event_type, session_id, payload)
+
+    # 2. Cognitive Memory (Markdown Vault / Local Journal)
+    _emit_via_memory(workspace_root, event, session_id)
 
     return 0
 

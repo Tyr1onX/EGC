@@ -1,0 +1,13 @@
+{
+  "cognitiveMemory": {
+    "enabled": false,
+    "provider": "obsidian-mcp",
+    "scope": "sandboxed",
+    "vaultPath": "~/Documents/Obsidian Vault",
+    "namespace": "EGC",
+    "writeSessions": true,
+    "writeTraces": true,
+    "writeGovernance": true,
+    "writeArchaeology": true
+  }
+}
