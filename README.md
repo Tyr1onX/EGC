@@ -1,5 +1,16 @@
 # Everything Gemini Code
 
+## ⚠️ Compatibility & Transition Status
+**Everything Gemini Code (EGC) is entering a structured transition and preservation phase.**
+As the Google ecosystem evolves toward the **Antigravity** runtime and **Model Context Protocol (MCP)**, we are freezing the current stable generation to ensure long-term stability and continuity.
+
+- **Status:** Fully Operational (Gemini CLI Final Generation)
+- **Support:** Continuity and backward compatibility are prioritized.
+- **Future:** EGC is adapting to an MCP-first architecture to enhance interoperability.
+- **Transition Roadmap:** [View TRANSITION_ROADMAP.md](./TRANSITION_ROADMAP.md)
+
+---
+
 ![Everything Gemini Code — the performance system for AI agent harnesses](assets/hero.png)
 
 [![Version](https://img.shields.io/badge/version-v1.0.0-blue.svg?style=flat-square)]() [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE) [![Engine](https://img.shields.io/badge/engine-Gemini%20Native-1a73e8.svg?style=flat-square)]() [![Bridge](https://img.shields.io/badge/bridge-Claude%20%7C%20OpenAI%20%7C%20Ollama-d97757.svg?style=flat-square)]() [![Language](https://img.shields.io/badge/tech-Python%20%7C%20TypeScript%20%7C%20SQLite-3776AB?style=flat-square)]() [![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%7C%20Windows-blue?style=flat-square)]() [![Local First](https://img.shields.io/badge/telemetry-Local--First-2ea44f?style=flat-square)]() [![Obsidian](https://img.shields.io/badge/interop-Obsidian-8b6cef?style=flat-square)](https://obsidian.md)
