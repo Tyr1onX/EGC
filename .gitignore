@@ -1,6 +1,6 @@
 # =========================================================
-# EGC — ULTIMATE .GITIGNORE
-# Everything Gemini Core Runtime Protection Layer
+# EGC — ULTIMATE .GITIGNORE (MCP ERA)
+# Everything Gemini Core - Cognitive Infrastructure
 # =========================================================
 
 # =========================================================
@@ -8,36 +8,9 @@
 # =========================================================
 node_modules/
 bower_components/
-jspm_packages/
 vendor/
-
-# =========================================================
-# PYTHON
-# =========================================================
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.so
-.python-version
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.tox/
-.nox/
-coverage/
-htmlcov/
-.coverage
-.coverage.*
-pip-wheel-metadata/
-
-# =========================================================
-# VIRTUAL ENVIRONMENTS
-# =========================================================
-.venv/
-venv/
-env/
-ENV/
+.yarn/cache/
+.pnp.*
 
 # =========================================================
 # BUILD / DIST
@@ -45,184 +18,39 @@ ENV/
 dist/
 build/
 out/
-release/
 target/
 tmp/
 temp/
+.next/
+.turbo/
+*.tsbuildinfo
 
 # =========================================================
-# LOGS
+# LOGS & TELEMETRY
 # =========================================================
 *.log
 logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+test_full_output.log
 
 # =========================================================
 # ENVIRONMENT / SECRETS / TOKENS
 # =========================================================
 .env
 .env.*
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
+!.env.example
 *.pem
 *.key
-*.crt
 *.p12
-*.pfx
-
 secrets/
 credentials/
 tokens/
-auth/
-apikeys/
-keys/
 
 # =========================================================
-# IDE / EDITORS
-# =========================================================
-.vscode/
-.idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.swp
-*.swo
-*.kate-swp
-*.code-workspace
-
-# =========================================================
-# OPERATING SYSTEM
-# =========================================================
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# =========================================================
-# TESTS / COVERAGE / QA
-# =========================================================
-coverage/
-.nyc_output/
-playwright-report/
-test-results/
-pytestdebug.log
-
-# =========================================================
-# TEMPORARY FILES
-# =========================================================
-*.tmp
-*.temp
-*.bak
-*.backup
-*.old
-*.orig
-*.rej
-
-# =========================================================
-# DO NOT UPLOAD PRIVATE RUNTIME
-# =========================================================
-recovery_snapshot_egc/
-recovery_final_egc/
-contamination_backup/
-semantic_batches/
-research/
-contexts/
-cache/
-runtime/
-sessions/
-memory/
-state/
-
-# =========================================================
-# AI / AGENT RUNTIME
-# =========================================================
-.ai/
-.claude/
-.gemini/
-.cursor/cache/
-.cursor/index/
-.cursor/egc-install-state.json
-.codex/cache/
-.codex/egc-install-state.json
-.openai/
-.anthropic/
-.mcp/
-.runtime/
-.egc_prefix_snapshots/
-agents-runtime/
-runtime-cache/
-runtime_state/
-
-# =========================================================
-# PRIVATE INTERNAL AUDITS — NEVER PUBLISH
-# These holds forensic reports, runtime audits, risk reports,
-# maintainer-only blocker analysis. They MUST NOT enter any
-# commit, push, release, npm pack, or public artifact.
-# Mirror these rules in .npmignore.
-# =========================================================
-.reports/
-.forensics/
-.internal/
-.runtime-audits/
-.audit/
-.audits/
-docs/private-audits/
-docs/_internal/
-docs/_private/
-docs/forensics/
-docs/audits/
-docs/runtime-audits/
-
-# =========================================================
-# COGNITIVE / FORENSIC OUTPUTS
-# =========================================================
-*_REPORT.md
-*_MAP.md
-*_ANALYSIS.md
-*_TRACE.md
-*_FORENSICS.md
-*_TOPOLOGY.md
-*_INDEX.md
-*_GRAPH.md
-*_DENSITY.md
-*_SURVIVABILITY*.md
-*_SEMANTIC*.md
-*_COGNITIVE*.md
-*_HOTSPOTS*.md
-*_BINDINGS*.md
-*_CASCADE*.md
-*_INJECTION*.md
-*_ORCHESTRATION*.md
-
-# =========================================================
-# GENERATED OUTPUTS
-# =========================================================
-search_results.txt
-test_full_output.log
-full_file_manifest.txt
-full_file_manifest_v2.txt
-TREE_FINAL.txt
-batch_*_skills.txt
-batch_*_skills_results.json
-
-# =========================================================
-# SNAPSHOTS / BACKUPS / TAR FILES
-# =========================================================
-backups/
-snapshots/
-*.tar
-*.tar.gz
-*.zip
-*.7z
-
-# =========================================================
-# DATABASES
+# DATABASES & RUNTIME PERSISTENCE
+# Protects egc-memory operational state and concurrency files
 # =========================================================
 *.sqlite
 *.sqlite3
@@ -231,296 +59,139 @@ snapshots/
 *.db-shm
 
 # =========================================================
-# LOCAL MCP / TOOLING
+# HOST RUNTIME ARTIFACTS (AGY, Cursor, Claude, Codex)
+# Prevents host-specific caches and indices from leaking
 # =========================================================
-mcp-configs/local/
-tool-outputs/
-local-runtime/
-sandbox/
-
-# =========================================================
-# CLAUDE / GEMINI / CODEX ARTIFACTS
-# =========================================================
+.ai/
+.claude/
+.gemini/
+.openai/
+.anthropic/
+.mcp/
+.cursor/cache/
+.cursor/index/
+.codex/cache/
 .claude-cache/
 .gemini-cache/
-.codex-cache/
-.ai-cache/
 .ai-history/
-.ai-traces/
 
 # =========================================================
-# CRAWLERS / SCRAPERS / INDEXERS OUTPUTS
+# LOCAL ARCHIVES & DEPRECATED STATE
 # =========================================================
-crawler_output/
-scraper_output/
-semantic_output/
-index_output/
-generated_indexes/
+artifacts/
+archive/
+traces/
+backups/
+snapshots/
+*.tar
+*.tar.gz
+*.zip
 
 # =========================================================
-# SECURITY / FORENSICS
+# PRIVATE INTERNAL AUDITS & FORENSICS
 # =========================================================
-forensics/
-quarantine/
-incident_reports/
-security_dumps/
-
-# =========================================================
-# LARGE GENERATED DOCUMENTATION
-# =========================================================
-docs/generated/
-docs/reports/
-docs/forensics/
-docs/tmp/
-# docs/runtime/ holds public engineering reference (command-agent maps,
-# session-adapter contracts). Block generated dumps inside it while keeping
-# tracked .md specifications shippable in a clean clone.
+.reports/
+.forensics/
+.internal/
+.runtime-audits/
+.audit/
+docs/private-audits/
 docs/runtime/*.log
 docs/runtime/*.json
-docs/runtime/dump-*
-docs/runtime/trace-*
+*_REPORT.md
+*_FORENSICS.md
 
 # =========================================================
-# PRIVATE AI DOCUMENTS
+# OS & IDE JUNK
 # =========================================================
-CLAUDE.md
-claude.md
-GEMINI_PRIVATE.md
-OPENAI_INTERNAL.md
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
 
 # =========================================================
-# OPERATIONAL DATA (Hardened)
+# PYTHON LEGACY & TESTS JUNK
 # =========================================================
-.sessions/
-egc_settings.json
-*.log
-forensic_*.txt
-test_full_output.log
-archaeology/
-journals/
-traces/
-vault\ exports/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+coverage/
+.nyc_output/
 
 # =========================================================
-# OPTIONAL — IGNORE ENTIRE AGENT / SKILL ECOSYSTEM
-# Uncomment if desired
+# KEEP: CORE INFRASTRUCTURE (MCP-FIRST)
+# Defines the real operational infrastructure layer
 # =========================================================
-# agents/
-# skills/
-
-# =========================================================
-# KEEP IMPORTANT FILES
-# =========================================================
-!package-lock.json
-!yarn.lock
-!pnpm-lock.yaml
-!requirements.txt
-!pyproject.toml
-!package.json
-!README.md
-!README.zh-CN.md
-!LICENSE
-!CONTRIBUTING.md
-!SECURITY.md
-!RULES.md
-
-# =========================================================
-# KEEP ENV TEMPLATE
-# =========================================================
-!.env.example
-
-# =========================================================
-# KEEP CORE DOCUMENTATION
-# =========================================================
-!docs/
-!docs/**/*.md
-
-# =========================================================
-# KEEP SOURCE CODE
-# =========================================================
-!src/
-!src/**
-
-# =========================================================
-# KEEP TESTS
-# =========================================================
+!mcp/
+!mcp/**
+!installer/
+!installer/**
 !tests/
 !tests/**
+!docs/
+!docs/**
 
 # =========================================================
-# KEEP CONFIGURATION FILES
+# KEEP: OPERATIONAL TAXONOMY & COGNITIVE ASSETS
+# The semantic payload and execution archetypes of EGC
 # =========================================================
-!.gitignore
-!.gitattributes
-!.editorconfig
-!.prettierrc
-!.eslintrc*
-!tsconfig.json
-
-# =========================================================
-# KEEP INSTALLERS / ENTRYPOINTS
-# =========================================================
-!install.sh
-!install.ps1
-!run.sh
-!run.ps1
-!startup.py
-!bootstrap.py
-!egc.py
-!egc_dashboard.py
-
-# =========================================================
-# KEEP RUNTIME / MEMORY CODE
-# =========================================================
-!scripts/runtime/
-!scripts/runtime/**
-!scripts/memory/
-!scripts/memory/**
-
-# =========================================================
-# KEEP CORE STRUCTURE
-# =========================================================
-!scripts/
-!scripts/**
-!hooks/
-!hooks/**
-!commands/
-!commands/**
-!agents/
-!agents/**
 !skills/
 !skills/**
+!agents/
+!agents/**
+!commands/
+!commands/**
+!hooks/
+!hooks/**
+!overlays/
+!overlays/**
+!routing/
+!routing/**
 !rules/
 !rules/**
-!schemas/
-!schemas/**
-!manifests/
-!manifests/**
 !examples/
 !examples/**
-!plugins/
-!plugins/**
-!internal/
-!internal/**
-!mcp-configs/
-!mcp-configs/*.json
-!legacy-command-shims/
-!legacy-command-shims/**
+!memory/
+!memory/**
+!manifests/
+!manifests/**
+!schemas/
+!schemas/**
 
 # =========================================================
-# KEEP HARNESS ADAPTERS (per-IDE plugin manifests)
+# KEEP: ROOT CONFIGURATION & MANIFESTS
 # =========================================================
-!.codex-plugin/
-!.codex-plugin/**
-!.gemini-plugin/
-!.gemini-plugin/**
-!.opencode/
-!.opencode/**
-!.codebuddy/
-!.codebuddy/**
-!.kiro/
-!.kiro/**
-!.trae/
-!.trae/**
-!.github/
-!.github/**
-
-# =========================================================
-# KEEP CONFIG ROOT FILES
-# =========================================================
-!.markdownlint.json
-!.npmignore
-.mcp.json
-!.tool-versions
-!.yarnrc.yml
-!VERSION
-!agent.yaml
-!commitlint.config.js
+!package.json
+!package-lock.json
+!tsconfig.json
+!README.md
+!SECURITY.md
+!CONTRIBUTING.md
+!RULES.md
+!.gitignore
+!.prettierrc
 !eslint.config.js
+!agent.yaml
+!VERSION
 
 # =========================================================
-# ADDITIONAL IGNORE PATTERNS
+# RE-BLOCK ARTIFACTS INSIDE WHITELISTED PATHS
+# Prevents accidental inclusion of compiled/cached data
 # =========================================================
-reports/
-.test_sessions/
-
-.yarn/cache/
-.yarn/install-state.gz
-.yarn/build-state.yml
-.yarn/unplugged/
-.pnp.*
-
-.history/
-.ipynb_checkpoints/
-
-*.profraw
-*.profdata
-*.lcov
-lcov.info
-
-.npm/
-*.pid
-*.seed
-*.tsbuildinfo
-
-Pipfile.lock
-poetry.lock
-
-live_execution_test.py.log
-
-# =========================================================
-# RE-BLOCK BUILD ARTIFACTS INSIDE WHITELISTED PATHS
-# =========================================================
-**/__pycache__/
-**/*.pyc
-**/*.pyo
-**/*.pyd
-**/*.so
-**/.DS_Store
-**/Thumbs.db
-**/desktop.ini
-**/.mypy_cache/
-**/.pytest_cache/
-**/.ruff_cache/
-**/.coverage
-**/.coverage.*
-**/coverage/
-**/htmlcov/
+**/node_modules/
+**/dist/
+**/build/
 **/*.log
 **/*.tmp
 **/*.bak
-**/*.backup
-**/*.old
-**/*.orig
-**/*.rej
-**/*.swp
-**/*.swo
-
-.codex-plugin/cache/
-.gemini-plugin/cache/
-.opencode/cache/
-.codebuddy/cache/
-.kiro/cache/
-.trae/cache/
-
-**/node_modules/
-
-**/.venv/
-**/venv/
-**/env/
-
-**/dist/
-**/build/
-**/.next/
-**/.turbo/
-**/.cache/
-
-# Internal audit report (working document, not for upload)
-docs/auditoria_completa.md
-
-# Internal architectural investigation journal (local-only, not for commit)
-docs/internal/
-
-# =========================================================
-# END
-# =========================================================.local-reports/
+**/*.sqlite
+**/*.db
+**/*.db-wal
+**/.DS_Store
