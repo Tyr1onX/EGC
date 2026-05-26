@@ -3,7 +3,19 @@ set -e
 
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+# Forward --help directly to the Node installer
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+  node "$ROOT_DIR/scripts/install-apply.js" "$@"
+  exit $?
+fi
+
 echo "EGC install"
+
+# Detect --dry-run flag
+DRY_RUN=false
+for _arg in "$@"; do
+  [ "$_arg" = "--dry-run" ] && DRY_RUN=true && break
+done
 
 # Node.js version check
 NODE_MAJOR=$(node -e "process.stdout.write(process.versions.node.split('.')[0])" 2>/dev/null || echo "0")
@@ -13,37 +25,45 @@ if [ "$NODE_MAJOR" -lt 18 ]; then
 fi
 echo "  node $(node --version)"
 
-# Root dependencies (better-sqlite3 etc.)
-echo "  installing root dependencies..."
-cd "$ROOT_DIR"
-npm install --silent
+if [ "$DRY_RUN" = false ]; then
+  # Root dependencies (better-sqlite3 etc.)
+  echo "  installing root dependencies..."
+  cd "$ROOT_DIR"
+  npm install --silent
 
-# egc-guardian
-echo "  building egc-guardian..."
-GUARDIAN_DIR="$ROOT_DIR/mcp/servers/egc-guardian"
-if [ ! -d "$GUARDIAN_DIR" ]; then
-  echo "Error: $GUARDIAN_DIR not found"
-  exit 1
+  # egc-guardian
+  echo "  building egc-guardian..."
+  GUARDIAN_DIR="$ROOT_DIR/mcp/servers/egc-guardian"
+  if [ ! -d "$GUARDIAN_DIR" ]; then
+    echo "Error: $GUARDIAN_DIR not found"
+    exit 1
+  fi
+  cd "$GUARDIAN_DIR"
+  npm install --silent
+  npm run build
+
+  # egc-memory
+  echo "  building egc-memory..."
+  MEMORY_DIR="$ROOT_DIR/mcp/servers/egc-memory"
+  if [ ! -d "$MEMORY_DIR" ]; then
+    echo "Error: $MEMORY_DIR not found"
+    exit 1
+  fi
+  cd "$MEMORY_DIR"
+  npm install --silent
+  npm run build
+
+  # Initialize database and local directories
+  echo "  initializing database..."
+  cd "$ROOT_DIR"
+  node scripts/egc.js init
 fi
-cd "$GUARDIAN_DIR"
-npm install --silent
-npm run build
 
-# egc-memory
-echo "  building egc-memory..."
-MEMORY_DIR="$ROOT_DIR/mcp/servers/egc-memory"
-if [ ! -d "$MEMORY_DIR" ]; then
-  echo "Error: $MEMORY_DIR not found"
-  exit 1
-fi
-cd "$MEMORY_DIR"
-npm install --silent
-npm run build
-
-# Initialize database and local directories
-echo "  initializing database..."
+# Delegate to Node installer (handles --target, --dry-run, --modules, --profile, etc.)
 cd "$ROOT_DIR"
-node scripts/egc.js init
+node scripts/install-apply.js "$@"
+
+[ "$DRY_RUN" = true ] && exit 0
 
 # Write harness config template
 cat > "$ROOT_DIR/.mcp.egc.json" <<EOF
