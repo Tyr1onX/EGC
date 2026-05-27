@@ -82,7 +82,7 @@ Choose model tier based on task complexity:
 - **Compact after milestone completion**, not during active debugging
   - Example: After feature complete, before starting next feature
 
-## Review Focus for AI-Generated Code
+## Review Focus for Generated Code
 
 Prioritize:
 - Invariants and edge cases
@@ -124,7 +124,7 @@ Outcome: Success
 - Planning agent task decomposition
 - Optimizing model tier selection
 - Implementing eval-first development
-- Reviewing AI-generated code
+- Reviewing generated code
 - Tracking development costs
 
 ## Integration with Other Skills
