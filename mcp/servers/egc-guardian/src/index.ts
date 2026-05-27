@@ -5,6 +5,7 @@ import path from 'path';
 import os from 'os';
 import fs from 'fs';
 import { z } from 'zod';
+import { validateCommand, validateWrite } from './validator.js';
 
 // Inline: reduce payloads by deduplication (replaces AdaptiveReducer)
 function adaptiveReduce(payloads: string[], _mode: string): { compressed: string[]; metrics: { reduced_bytes: number } } {
@@ -62,9 +63,7 @@ function auditLog(action: string, status: 'ALLOWED'|'DENIED'|'MUTATED'|'ONLINE'|
 
 const server = new Server({ name: "egc-guardian-router", version: "3.0.0" }, { capabilities: { tools: {} } });
 
-const ALLOWED_COMMANDS = ['ls', 'cat', 'grep', 'git', 'npm', 'npx', 'node', 'tsc', 'find', 'stat', 'head', 'rm', 'mv'];
-const DENIED_PATHS = [path.join(os.homedir(), '.ssh'), '/etc'];
-const SHELL_META_REGEX = /[&|;<>$`\n\r]/;
+// Validation logic lives in validator.ts — imported above
 
 const ValidateCommandSchema = z.object({
   command: z.string().min(1)
@@ -127,29 +126,23 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     switch (request.params.name) {
       case "validate_command": {
         const { command } = ValidateCommandSchema.parse(request.params.arguments);
-        if (SHELL_META_REGEX.test(command)) {
-          auditLog('COMMAND_EXECUTION', 'DENIED', { command, reason: 'ShellMetacharactersFound' });
-          return { content: [{ type: "text", text: `[DENIED] Shell chaining/metacharacters are forbidden.` }] };
+        const result = validateCommand(command);
+        if (!result.allowed) {
+          auditLog('COMMAND_EXECUTION', 'DENIED', { command, reason: result.reason, trust_level: result.trust_level });
+          return { content: [{ type: "text", text: `[DENIED] ${result.reason}` }] };
         }
-        const baseCommand = command.trim().split(/\s+/)[0];
-        if (!ALLOWED_COMMANDS.includes(baseCommand)) {
-           auditLog('COMMAND_EXECUTION', 'DENIED', { command, reason: 'NotInAllowlist' });
-           return { content: [{ type: "text", text: `[DENIED] Command '${baseCommand}' is restricted.` }] };
-        }
-        auditLog('COMMAND_EXECUTION', 'ALLOWED', { command });
+        auditLog('COMMAND_EXECUTION', 'ALLOWED', { command, trust_level: result.trust_level });
         return { content: [{ type: "text", text: "[ALLOWED]" }] };
       }
       
       case "validate_write": {
         const { filepath } = ValidateWriteSchema.parse(request.params.arguments);
-        const normalizedPath = path.resolve(filepath);
-        for (const denied of DENIED_PATHS) {
-           if (normalizedPath === denied || normalizedPath.startsWith(denied + path.sep)) {
-              auditLog('FILE_WRITE', 'DENIED', { filepath: normalizedPath, reason: 'ProtectedPath' });
-              return { content: [{ type: "text", text: `[DENIED] Path protected.` }] };
-           }
+        const result = validateWrite(filepath);
+        if (!result.allowed) {
+          auditLog('FILE_WRITE', 'DENIED', { filepath, reason: result.reason });
+          return { content: [{ type: "text", text: `[DENIED] ${result.reason}` }] };
         }
-        auditLog('FILE_WRITE', 'ALLOWED', { filepath: normalizedPath });
+        auditLog('FILE_WRITE', 'ALLOWED', { filepath: path.resolve(filepath) });
         return { content: [{ type: "text", text: "[ALLOWED]" }] };
       }
 
