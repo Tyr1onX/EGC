@@ -11,11 +11,6 @@ purposeful, polished, and appropriate to the product domain.
 
 Source: salvaged from stale community PR #1659 by `linus707`.
 
-Note: EGC intentionally does not rebundle the canonical Anthropic
-`frontend-design` skill. Install that from `anthropics/skills` when you want the
-official upstream skill. This skill is the EGC-specific design-direction salvage
-of the useful local guidance from #1659.
-
 ## When to Use
 
 - The user asks to build a web page, app, dashboard, artifact, component, or UI.
