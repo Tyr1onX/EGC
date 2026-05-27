@@ -1,10 +1,10 @@
 $ErrorActionPreference = "Stop"
 
 $RootDir       = $PSScriptRoot
-$BootstrapDb   = Join-Path $RootDir "scripts" "bootstrap-state-db.js"
-$EgcInstall    = Join-Path $RootDir "scripts" "install-apply.js"
-$GuardianBin   = Join-Path $RootDir "mcp" "servers" "egc-guardian" "build" "index.js"
-$MemoryBin     = Join-Path $RootDir "mcp" "servers" "egc-memory"   "build" "index.js"
+$BootstrapDb   = Join-Path (Join-Path $RootDir "scripts") "bootstrap-state-db.js"
+$EgcInstall    = Join-Path (Join-Path $RootDir "scripts") "install-apply.js"
+$GuardianBin   = Join-Path (Join-Path (Join-Path (Join-Path (Join-Path $RootDir "mcp") "servers") "egc-guardian") "build") "index.js"
+$MemoryBin     = Join-Path (Join-Path (Join-Path (Join-Path (Join-Path $RootDir "mcp") "servers") "egc-memory") "build") "index.js"
 
 # Forward --help directly to the Node installer
 if ($args -contains '--help') {
@@ -54,7 +54,7 @@ if (-not $DryRun) {
 
     # egc-guardian
     Write-Host "  building egc-guardian..."
-    $GuardianDir = Join-Path $RootDir "mcp" "servers" "egc-guardian"
+    $GuardianDir = Join-Path (Join-Path (Join-Path $RootDir "mcp") "servers") "egc-guardian"
     if (-Not (Test-Path $GuardianDir)) {
         Write-Error "Not found: $GuardianDir"
         exit 1
@@ -65,7 +65,7 @@ if (-not $DryRun) {
 
     # egc-memory
     Write-Host "  building egc-memory..."
-    $MemoryDir = Join-Path $RootDir "mcp" "servers" "egc-memory"
+    $MemoryDir = Join-Path (Join-Path (Join-Path $RootDir "mcp") "servers") "egc-memory"
     if (-Not (Test-Path $MemoryDir)) {
         Write-Error "Not found: $MemoryDir"
         exit 1
@@ -135,25 +135,25 @@ if (-not $DryRun) {
     }
 
     # Claude Code (Windows path)
-    $claudeConfig = Join-Path $env:APPDATA "Claude" "claude_desktop_config.json"
+    $claudeConfig = Join-Path (Join-Path $env:APPDATA "Claude") "claude_desktop_config.json"
     if ((Get-Command claude -ErrorAction SilentlyContinue) -or (Test-Path (Split-Path $claudeConfig -Parent))) {
         Register-McpJson -Target $claudeConfig -Label "Claude Code"
     }
 
     # Cursor (Windows path)
-    $cursorConfig = Join-Path $env:USERPROFILE ".cursor" "mcp.json"
+    $cursorConfig = Join-Path (Join-Path $env:USERPROFILE ".cursor") "mcp.json"
     if ((Get-Command cursor -ErrorAction SilentlyContinue) -or (Test-Path (Join-Path $env:USERPROFILE ".cursor"))) {
         Register-McpJson -Target $cursorConfig -Label "Cursor"
     }
 
     # Kiro
-    $kiroConfig = Join-Path $env:USERPROFILE ".kiro" "settings" "mcp.json"
+    $kiroConfig = Join-Path (Join-Path (Join-Path $env:USERPROFILE ".kiro") "settings") "mcp.json"
     if ((Get-Command kiro -ErrorAction SilentlyContinue) -or (Test-Path (Join-Path $env:USERPROFILE ".kiro"))) {
         Register-McpJson -Target $kiroConfig -Label "Kiro"
     }
 
     # OpenCode
-    $opencodeConfig = Join-Path $env:APPDATA "opencode" "config.json"
+    $opencodeConfig = Join-Path (Join-Path $env:APPDATA "opencode") "config.json"
     if ((Get-Command opencode -ErrorAction SilentlyContinue) -or (Test-Path (Split-Path $opencodeConfig -Parent))) {
         Register-McpJson -Target $opencodeConfig -Label "OpenCode"
     }
