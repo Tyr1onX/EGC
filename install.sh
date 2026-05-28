@@ -135,7 +135,22 @@ if [ -t 0 ] && [ "$DRY_RUN" = false ]; then
   read -r _install_ans
   _install_ans="${_install_ans:-Y}"
   if [ "$_install_ans" = "Y" ] || [ "$_install_ans" = "y" ]; then
-    node "$ROOT_DIR/scripts/install-apply.js" --target egc
+    if [ -d "$HOME/.gemini" ] || command -v gemini >/dev/null 2>&1 || command -v agy >/dev/null 2>&1; then
+      echo "  installing to Gemini / AGY..."
+      node "$ROOT_DIR/scripts/install-apply.js" --target egc --profile full
+    fi
+    if [ -d "$HOME/.codex" ] || command -v codex >/dev/null 2>&1; then
+      echo "  installing to Codex..."
+      node "$ROOT_DIR/scripts/install-apply.js" --target codex --profile full
+    fi
+    if [ -d "$HOME/.opencode" ] || command -v opencode >/dev/null 2>&1; then
+      echo "  installing to OpenCode..."
+      node "$ROOT_DIR/scripts/install-apply.js" --target opencode --profile full
+    fi
+    if [ -d "$HOME/.kiro" ] || command -v kiro >/dev/null 2>&1; then
+      echo "  installing to Kiro..."
+      bash "$ROOT_DIR/.kiro/install.sh" ~
+    fi
   fi
 fi
 

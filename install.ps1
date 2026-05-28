@@ -113,7 +113,26 @@ $isInteractive = [Environment]::UserInteractive -and -not $env:CI
 if ($isInteractive -and -not $DryRun) {
     $ans = Read-Host "`n  Install prompt library? (62 agents, 228 skills, 74 commands) [Y/n]"
     if ($ans -eq '' -or $ans -eq 'Y' -or $ans -eq 'y') {
-        node $EgcInstall --target egc
+        if ((Get-Command gemini -ErrorAction SilentlyContinue) -or (Test-Path (Join-Path $env:USERPROFILE ".gemini"))) {
+            Write-Host "  installing to Gemini / AGY..."
+            node $EgcInstall --target egc --profile full
+        }
+        if ((Get-Command codex -ErrorAction SilentlyContinue) -or (Test-Path (Join-Path $env:USERPROFILE ".codex"))) {
+            Write-Host "  installing to Codex..."
+            node $EgcInstall --target codex --profile full
+        }
+        if ((Get-Command opencode -ErrorAction SilentlyContinue) -or (Test-Path (Join-Path $env:USERPROFILE ".opencode"))) {
+            Write-Host "  installing to OpenCode..."
+            node $EgcInstall --target opencode --profile full
+        }
+        if ((Get-Command kiro -ErrorAction SilentlyContinue) -or (Test-Path (Join-Path $env:USERPROFILE ".kiro"))) {
+            if (Get-Command bash -ErrorAction SilentlyContinue) {
+                Write-Host "  installing to Kiro..."
+                bash (Join-Path $RootDir (Join-Path ".kiro" "install.sh")) ~
+            } else {
+                Write-Host "  note: Kiro detected but bash not available — run manually: bash .kiro/install.sh ~" -ForegroundColor Yellow
+            }
+        }
     }
 }
 
