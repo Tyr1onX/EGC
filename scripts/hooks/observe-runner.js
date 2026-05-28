@@ -7,6 +7,7 @@ const { spawnSync, spawn } = require('child_process');
 
 const OBSERVE_RELATIVE_PATH = path.join('skills', 'ai', 'continuous-learning-v2', 'hooks', 'observe.sh');
 const DEFAULT_TIMEOUT_MS = 9000;
+const SAFE_SHELL_BASENAMES = new Set(['bash', 'bash.exe', 'sh', 'sh.exe']);
 
 function getPluginRoot(options = {}) {
   if (options.pluginRoot && String(options.pluginRoot).trim()) {
@@ -45,7 +46,10 @@ function toShellPath(filePath) {
 function findShellBinary() {
   const candidates = [];
   if (process.env.BASH && process.env.BASH.trim()) {
-    candidates.push(process.env.BASH.trim());
+    const trimmed = process.env.BASH.trim();
+    if (SAFE_SHELL_BASENAMES.has(path.basename(trimmed).toLowerCase())) {
+      candidates.push(trimmed);
+    }
   }
 
   if (process.platform === 'win32') {
