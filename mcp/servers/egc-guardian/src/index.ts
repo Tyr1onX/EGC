@@ -5,7 +5,7 @@ import path from 'path';
 import os from 'os';
 import fs from 'fs';
 import { z } from 'zod';
-import { validateCommand, validateWrite } from './validator.js';
+import { validateCommand, validateWrite, isProtectedPath } from './validator.js';
 
 // Inline: reduce payloads by deduplication (replaces AdaptiveReducer)
 function adaptiveReduce(payloads: string[], _mode: string): { compressed: string[]; metrics: { reduced_bytes: number } } {
@@ -154,7 +154,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         for (const filepath of filepaths) {
            try {
              const resolved = path.resolve(filepath);
-             const content = await fs.promises.readFile(resolved, 'utf-8');
+             let realResolved: string;
+             try {
+               realResolved = fs.realpathSync(resolved);
+             } catch {
+               auditLog('CONTEXT_LOAD', 'DENIED', { filepath, reason: 'path resolution failed' });
+               continue;
+             }
+             if (isProtectedPath(realResolved)) {
+               auditLog('CONTEXT_LOAD', 'DENIED', { filepath, reason: 'protected path' });
+               continue;
+             }
+             const content = await fs.promises.readFile(realResolved, 'utf-8');
              // Split context into chunks/paragraphs to allow granular pruning
              const chunks = content.split('\n\n').filter(c => c.trim().length > 0);
              rawPayloads.push(...chunks);
@@ -195,7 +206,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         for (const filePath of files) {
           try {
             const abs = path.resolve(filePath);
-            if (fs.existsSync(abs)) rawPayloads.push(fs.readFileSync(abs, 'utf8'));
+            const realAbs = fs.realpathSync(abs);
+            if (!isProtectedPath(realAbs)) rawPayloads.push(fs.readFileSync(realAbs, 'utf8'));
           } catch {}
         }
 
