@@ -9,6 +9,9 @@ on:
         type: string
         default: '20.x'
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     name: Validate Components

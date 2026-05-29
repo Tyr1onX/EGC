@@ -19,6 +19,9 @@ on:
         type: string
         default: 'npm'
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Test
