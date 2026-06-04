@@ -1,4 +1,4 @@
-[![version](https://img.shields.io/github/package-json/v/Fmarzochi/everything-gemini?color=cb3837&logo=npm&logoColor=white)](https://github.com/Fmarzochi/everything-gemini) [![Node.js >= 18](https://img.shields.io/badge/node-%3E%3D18-brightgreen?logo=node.js&logoColor=white)](https://nodejs.org) [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md) [![Stars](https://img.shields.io/github/stars/Fmarzochi/everything-gemini?style=flat)](https://github.com/Fmarzochi/everything-gemini/stargazers) [![Forks](https://img.shields.io/github/forks/Fmarzochi/everything-gemini?style=flat)](https://github.com/Fmarzochi/everything-gemini/network/members) [![Issues](https://img.shields.io/github/issues/Fmarzochi/everything-gemini)](https://github.com/Fmarzochi/everything-gemini/issues) [![Maintained](https://img.shields.io/badge/Maintained-yes-brightgreen)](https://github.com/Fmarzochi/everything-gemini/commits/main) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Fmarzochi/everything-gemini/badge)](https://securityscorecards.dev/viewer/?uri=github.com/Fmarzochi/everything-gemini) [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13099/badge)](https://www.bestpractices.dev/projects/13099)
+[![version](https://img.shields.io/github/package-json/v/Fmarzochi/everything-gemini?color=cb3837&logo=npm&logoColor=white)](https://github.com/Fmarzochi/everything-gemini) [![Node.js >= 18](https://img.shields.io/badge/node-%3E%3D18-brightgreen?logo=node.js&logoColor=white)](https://nodejs.org) [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md) [![Stars](https://img.shields.io/github/stars/Fmarzochi/everything-gemini?style=flat)](https://github.com/Fmarzochi/everything-gemini/stargazers) [![Forks](https://img.shields.io/github/forks/Fmarzochi/everything-gemini?style=flat)](https://github.com/Fmarzochi/everything-gemini/network/members) [![Issues](https://img.shields.io/github/issues/Fmarzochi/everything-gemini)](https://github.com/Fmarzochi/everything-gemini/issues) [![Maintained](https://img.shields.io/badge/Maintained-yes-brightgreen)](https://github.com/Fmarzochi/everything-gemini/commits/main) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Fmarzochi/everything-gemini/badge)](https://securityscorecards.dev/viewer/?uri=github.com/Fmarzochi/everything-gemini)
 
 <div align="center">
 
@@ -218,11 +218,21 @@ The branch `legacy-runtime` preserves the full historical architecture for anyon
 
 ---
 
-## License [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+<div align="center">
 
----
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+&nbsp;
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13099/badge)](https://www.bestpractices.dev/projects/13099)
+&nbsp;
+[![OpenSSF Baseline Level 1](https://www.bestpractices.dev/projects/13099/badge?level=baseline-1)](https://www.bestpractices.dev/projects/13099?level=baseline-1)
+&nbsp;
+[![OpenSSF Baseline Level 2](https://www.bestpractices.dev/projects/13099/badge?level=baseline-2)](https://www.bestpractices.dev/projects/13099?level=baseline-2)
+&nbsp;
+[![OpenSSF Baseline Level 3](https://www.bestpractices.dev/projects/13099/badge?level=baseline-3)](https://www.bestpractices.dev/projects/13099?level=baseline-3)
 
-<p align="center">
-  <img src="assets/images/egc-logo.png" alt="EGC Logo" width="80" /><br/>
-  Desenvolvido por <a href="https://linkedin.com/in/felipemarzochi">Felipe Marzochi</a>
-</p>
+<br/>
+
+<img src="assets/images/egc-logo.png" alt="EGC Logo" width="80" /><br/>
+Desenvolvido por <a href="https://linkedin.com/in/felipemarzochi">Felipe Marzochi</a>
+
+</div>
