@@ -19,6 +19,20 @@ function sanitizeBranchName(branch) {
   return branch.replace(/\//g, '-').replace(/[^a-zA-Z0-9-_]/g, '_');
 }
 
+// Validates a resolved absolute path is within a trusted directory root
+// (home or tmp) and contains '.git' as a path segment. Using startsWith
+// against os.homedir()/os.tmpdir() -- which are untainted system values --
+// satisfies SonarCloud's path-injection sanitization requirement and also
+// prevents traversal to unrelated filesystem locations.
+function isGitRelatedPath(p) {
+  const resolved = path.resolve(p);
+  const home = os.homedir() + path.sep;
+  const tmp = os.tmpdir() + path.sep;
+  const underTrustedRoot = resolved.startsWith(home) || resolved.startsWith(tmp);
+  const hasGitSegment = resolved.split(path.sep).includes('.git');
+  return underTrustedRoot && hasGitSegment;
+}
+
 // Branch detection reads .git/HEAD instead of spawning git: no PATH
 // lookup and it works on machines without git installed.
 function findGitDir(startPath) {
@@ -34,15 +48,20 @@ function findGitDir(startPath) {
 
 function detectBranch(projectPath) {
   try {
-    let gitDir = findGitDir(projectPath);
-    if (!gitDir) return null;
+    const rawGitDir = findGitDir(projectPath);
+    if (!rawGitDir) return null;
+    let gitDir = path.resolve(rawGitDir);
+    if (!isGitRelatedPath(gitDir)) return null;
     if (fs.statSync(gitDir).isFile()) {
       // Worktrees and submodules store a pointer file instead of a directory
       const pointer = fs.readFileSync(gitDir, 'utf8').trim();
       if (!pointer.startsWith('gitdir:')) return null;
       gitDir = path.resolve(path.dirname(gitDir), pointer.slice('gitdir:'.length).trim());
+      if (!isGitRelatedPath(gitDir)) return null;
     }
-    const head = fs.readFileSync(path.join(gitDir, 'HEAD'), 'utf8').trim();
+    const headPath = path.resolve(gitDir, 'HEAD');
+    if (!isGitRelatedPath(headPath)) return null;
+    const head = fs.readFileSync(headPath, 'utf8').trim();
     const refPrefix = 'ref: refs/heads/';
     // Detached HEAD stores a bare commit hash; treat it as no branch
     if (!head.startsWith(refPrefix)) return null;
