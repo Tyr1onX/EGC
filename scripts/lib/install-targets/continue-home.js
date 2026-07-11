@@ -4,11 +4,11 @@ const {
 } = require('./helpers');
 
 module.exports = createInstallTargetAdapter({
-  id: 'windsurf-project',
-  target: 'windsurf',
-  kind: 'project',
-  rootSegments: ['.windsurf'],
-  installStatePathSegments: ['egc-install-state.json'],
-  nativeRootRelativePath: '.windsurf',
+  id: 'continue-home',
+  target: 'continue',
+  kind: 'home',
+  rootSegments: ['.continue'],
+  installStatePathSegments: ['egc', 'install-state.json'],
+  nativeRootRelativePath: '.continue',
   planOperations: createFlatSkillPlanOperations,
 });
