@@ -17,6 +17,7 @@ const EXPECTED_HARNESSES = [
   'Claude Code',
   'Antigravity',
   'Gemini CLI',
+  'Qwen Code',
   'Cursor',
   'Codex CLI',
   'OpenCode',
@@ -37,7 +38,7 @@ const EXPECTED_HARNESSES = [
   'Zed',
 ];
 
-const EXPECTED_TIER1_TARGETS = ['egc', 'claude', 'cursor', 'antigravity', 'codex', 'gemini', 'opencode', 'codebuddy', 'windsurf', 'amp', 'copilot', 'zed', 'continue', 'kiro', 'trae', 'junie', 'goose', 'amazonq', 'roocode', 'openhands', 'aider', 'warp'];
+const EXPECTED_TIER1_TARGETS = ['egc', 'claude', 'cursor', 'antigravity', 'codex', 'gemini', 'qwen', 'opencode', 'codebuddy', 'windsurf', 'amp', 'copilot', 'zed', 'continue', 'kiro', 'trae', 'junie', 'goose', 'amazonq', 'roocode', 'openhands', 'aider', 'warp'];
 const EXPECTED_TIER2_INSTALLERS = ['.kiro/install.sh', '.trae/install.sh'];
 
 function loadDoc() {
