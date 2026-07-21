@@ -576,6 +576,50 @@ function runTests() {
     );
   })) passed++; else failed++;
 
+  if (test('cline adapter handles single-module, empty, and scaffold inputs', () => {
+    const adapter = getInstallTargetAdapter('cline');
+    const repoRoot = path.join(__dirname, '..', '..');
+    const projectRoot = '/workspace/app';
+
+    const singleModuleOperations = adapter.planOperations({
+      repoRoot,
+      projectRoot,
+      module: {
+        id: 'custom-module',
+        paths: ['README.md', '.cursor'],
+      },
+    });
+
+    assert.strictEqual(singleModuleOperations.length, 1);
+    assert.strictEqual(
+      normalizedRelativePath(singleModuleOperations[0].sourceRelativePath),
+      'README.md'
+    );
+    assert.strictEqual(
+      singleModuleOperations[0].destinationPath,
+      path.join(projectRoot, '.clinerules', 'README.md')
+    );
+
+    assert.deepStrictEqual(
+      adapter.planOperations({
+        repoRoot,
+        projectRoot,
+      }),
+      []
+    );
+
+    assert.deepStrictEqual(
+      adapter.planOperations({
+        repoRoot,
+        projectRoot,
+        module: {
+          id: 'empty-module',
+        },
+      }),
+      []
+    );
+  })) passed++; else failed++;
+
   if (test('cline adapter is included in the full adapter list', () => {
     const adapters = listInstallTargetAdapters();
     const targets = adapters.map(adapter => adapter.target);
