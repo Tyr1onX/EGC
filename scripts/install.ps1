@@ -156,6 +156,20 @@ function Resolve-PhysicalDirectory {
     return [System.IO.Path]::GetFullPath($resolved).TrimEnd('\', '/')
 }
 
+# Whether this running tree is an npm-installed copy of @egchq/egc. A
+# package installed with --prefix may no longer live under the prefix
+# reported by a later `npm root -g` (#1464), but npm's package layout is
+# still stable: node_modules/@egchq/egc. A source checkout does not have
+# that shape and keeps the npm-link behavior from #1096.
+function Test-NpmPackageRoot {
+    param([string]$Path)
+    $packageName = Split-Path -Leaf $Path
+    $scopeDir = Split-Path -Parent $Path
+    $scopeName = Split-Path -Leaf $scopeDir
+    $nodeModulesDir = Split-Path -Parent $scopeDir
+    return ($packageName -eq 'egc' -and $scopeName -eq '@egchq' -and (Split-Path -Leaf $nodeModulesDir) -eq 'node_modules')
+}
+
 # Forward --help directly to the Node installer
 if ($args -contains '--help') {
     node $EgcInstall @args
@@ -214,23 +228,11 @@ if (-not $DryRun) {
     # message at the end of this script tells the user to run (and anything
     # else they type afterward) targets the code that was just installed
     # rather than a stale prior global install left on PATH from an earlier
-    # npm publish. Skipped when this tree IS the global npm install
-    # (`egc install` right after `npm install -g @egchq/egc`): the egc
-    # command on PATH already points here, so there is nothing stale to
-    # outrank, and without permission to the global prefix the link can only
-    # fail and print a note about a checkout the person does not have
-    # (#1218 Linux report). Best-effort: some environments lack permission
-    # to the global npm prefix, and that must not abort the rest of the
-    # install.
-    $GlobalNpmRoot = (& npm root -g 2>$null)
-    $IsGlobalNpmInstall = $false
-    if ($GlobalNpmRoot) {
-        $GlobalPkgDir = Join-Path (Join-Path $GlobalNpmRoot "@egchq") "egc"
-        if (Test-Path $GlobalPkgDir) {
-            $IsGlobalNpmInstall = ((Resolve-Path $GlobalPkgDir).Path -eq (Resolve-Path $RootDir).Path)
-        }
-    }
-    if ($IsGlobalNpmInstall) {
+    # npm publish. An npm-installed copy already provides that command, even
+    # when it was installed under a custom --prefix that differs from the npm
+    # prefix active now (#1464). Detect that from this package's own path;
+    # a source checkout keeps the link behavior from #1096.
+    if (Test-NpmPackageRoot $RootDir) {
         Write-Host "  egc command already provided by the global npm install"
     } else {
         Write-Host "  linking the egc command to this checkout..."

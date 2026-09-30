@@ -6,7 +6,7 @@ const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { execFileSync } = require('child_process');
+const { execFileSync, spawnSync } = require('child_process');
 const { CLI_TIMEOUT_MS } = require('../fixtures/subprocess-timeouts');
 
 const SCRIPT = path.join(__dirname, '..', '..', 'scripts', 'install.sh');
@@ -295,34 +295,39 @@ function runTests() {
     );
   })) passed++; else failed++;
 
-  if (test('skips npm link when running from the global npm install (#1218)', () => {
+  if (test('skips npm link for npm installs under any prefix (#1464)', () => {
     const script = fs.readFileSync(SCRIPT, 'utf8');
+    const helper = /is_npm_package_root\(\)\s*\{[\s\S]*?\n\}/.exec(script);
+    assert.ok(helper, 'install.sh must classify the running package from its own path');
 
-    // `egc install` after `npm install -g @egchq/egc` runs this script from
-    // inside the global npm prefix: the egc bin on PATH already points at
-    // this tree, so npm link is redundant there, and with a root-owned
-    // prefix (distro Node) it fails and prints a note about a checkout the
-    // person does not have. The guard must compare the resolved global
-    // package dir against ROOT_DIR before ever attempting the link.
-    assert.ok(
-      /npm root -g/.test(script),
-      'install.sh must locate the global npm package root for the guard'
+    const classify = (root) => spawnSync(
+      'bash',
+      ['-c', `${helper[0]}\nROOT_DIR="$1"\nis_npm_package_root`, 'classifier', root],
+      { encoding: 'utf8', timeout: CLI_TIMEOUT_MS }
+    );
+
+    const customPrefixRoot = path.join('/tmp', 'egc-prefix-a', 'lib', 'node_modules', '@egchq', 'egc');
+    assert.strictEqual(
+      classify(customPrefixRoot).status,
+      0,
+      'an npm package under a custom prefix must be recognized without consulting npm root -g'
+    );
+    assert.notStrictEqual(
+      classify('/tmp/EGC').status,
+      0,
+      'a source checkout must still take the npm-link path'
     );
     assert.ok(
-      script.includes('@egchq/egc'),
-      'the guard must target the published package directory'
-    );
-    assert.ok(
-      script.indexOf('npm root -g') < script.indexOf('npm link --silent'),
-      'the global-install guard must run before npm link'
+      !script.includes('GLOBAL_PKG_DIR='),
+      'the guard must not derive package ownership from the npm prefix active later'
     );
     assert.ok(
       /npm link --silent/.test(script),
-      'the git-checkout path must still link the egc command'
+      'the source-checkout path must still link the egc command'
     );
     assert.ok(
       script.includes('already provided by the global npm install'),
-      'the skip must be announced, not silent'
+      'the npm-install skip must be announced, not silent'
     );
   })) passed++; else failed++;
 
