@@ -74,6 +74,20 @@ install_deps() {
   exit 1
 }
 
+# Whether this running tree is an npm-installed copy of @egchq/egc. The
+# package can live under any prefix, including one passed to
+# `npm install -g --prefix ...`, so the npm prefix active later is not a
+# reliable ownership signal (#1464). The package's own path is: npm installs
+# the scoped package under node_modules/@egchq/egc; a source checkout does
+# not have that shape and still needs npm link to outrank a stale command.
+is_npm_package_root() {
+  local scope_dir
+  scope_dir="$(dirname "$ROOT_DIR")"
+  [[ "$(basename "$ROOT_DIR")" == "egc" ]] &&
+    [[ "$(basename "$scope_dir")" == "@egchq" ]] &&
+    [[ "$(basename "$(dirname "$scope_dir")")" == "node_modules" ]]
+}
+
 # Forward --help directly to the Node installer
 if [[ "$1" = "--help" || "$1" = "-h" ]]; then
   node "$ROOT_DIR/scripts/install-apply.js" "$@"
@@ -167,17 +181,11 @@ if [[ "$DRY_RUN" = false ]]; then
   # at the end of this script tells the user to run (and anything else they
   # type afterward) targets the code that was just installed rather than a
   # stale prior global install left on PATH from an earlier npm publish.
-  # Skipped when this tree IS the global npm install (`egc install` right
-  # after `npm install -g @egchq/egc`): the egc bin on PATH already points
-  # here, so there is nothing stale to outrank, and with a root-owned global
-  # prefix (distro Node) the link can only fail and print a note about a
-  # checkout the person does not have (#1218 Linux report). Both sides
-  # resolve symlinks (pwd -P, matching ROOT_DIR above), so an nvm/mise-style
-  # symlinked prefix still compares equal. Best-effort: some environments
-  # lack permission to the global npm prefix, and that must not abort the
-  # rest of the install.
-  GLOBAL_PKG_DIR="$(npm root -g 2>/dev/null || true)/@egchq/egc"
-  if [[ -d "$GLOBAL_PKG_DIR" && "$(cd "$GLOBAL_PKG_DIR" && pwd -P)" == "$ROOT_DIR" ]]; then
+  # An npm-installed copy already provides that command, even when it was
+  # installed under a custom --prefix that differs from the npm prefix active
+  # now (#1464). Detect that from this package's own path instead of
+  # `npm root -g`; a source checkout keeps the link behavior from #1096.
+  if is_npm_package_root; then
     echo "  egc command already provided by the global npm install"
   else
     echo "  linking the egc command to this checkout..."
